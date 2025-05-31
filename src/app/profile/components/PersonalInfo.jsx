@@ -1,26 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getLocalStorage, getParsedLocalStorage, setLocalStorage } from '../../../utils/storage';
+import { useRouter } from 'next/navigation';
 
 const PersonalInfo = () => {
-    const userinfo = getParsedLocalStorage("user");
-    console.log(userinfo);
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
-        firstName: userinfo.Firstname,
-        lastName: userinfo.Lastname,
-        email: userinfo.email,
-        phone: userinfo.phone,
-        Adress: userinfo.Adress,
-        ville: userinfo.city,
-        postalCode: userinfo.postalCode,
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        Adress: '',
+        ville: '',
+        postalCode: '',
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+        const userinfo = getParsedLocalStorage("user");
+        if (!userinfo) {
+            router.push('/auth');
+            return;
+        }
+
+        setFormData({
+            firstName: userinfo.Firstname || '',
+            lastName: userinfo.Lastname || '',
+            email: userinfo.email || '',
+            phone: userinfo.phone || '',
+            Adress: userinfo.Adress || '',
+            ville: userinfo.city || '',
+            postalCode: userinfo.postalCode || '',
+        });
+        setLoading(false);
+    }, [router]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,6 +61,11 @@ const PersonalInfo = () => {
 
         try {
             const token = getLocalStorage("token");
+            if (!token) {
+                router.push('/auth');
+                return;
+            }
+
             const response = await axios.put(
                 `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updateme`,
                 formData,
@@ -55,14 +80,14 @@ const PersonalInfo = () => {
             if (response.data) {
                 // Update local storage with new user info
                 const updatedUser = {
-                    ...userinfo,
-                    name: formData.firstName,
+                    ...getParsedLocalStorage("user"),
+                    Firstname: formData.firstName,
+                    Lastname: formData.lastName,
                     email: formData.email,
                     phone: formData.phone,
                     Adress: formData.Adress,
-                    city: formData.city,
-                    postalCode: formData.postalCode,
-                    country: formData.country
+                    city: formData.ville,
+                    postalCode: formData.postalCode
                 };
                 setLocalStorage("user", JSON.stringify(updatedUser));
 
@@ -75,6 +100,14 @@ const PersonalInfo = () => {
             setIsSaving(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -166,7 +199,7 @@ const PersonalInfo = () => {
                         </label>
                         <input
                             type="text"
-                            name="address"
+                            name="Adress"
                             value={formData.Adress}
                             onChange={handleChange}
                             disabled={!isEditing}
@@ -180,7 +213,7 @@ const PersonalInfo = () => {
                         </label>
                         <input
                             type="text"
-                            name="city"
+                            name="ville"
                             value={formData.ville}
                             onChange={handleChange}
                             disabled={!isEditing}
@@ -196,20 +229,6 @@ const PersonalInfo = () => {
                             type="text"
                             name="postalCode"
                             value={formData.postalCode}
-                            onChange={handleChange}
-                            disabled={!isEditing}
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Pays
-                        </label>
-                        <input
-                            type="text"
-                            name="country"
-                            value={formData.country}
                             onChange={handleChange}
                             disabled={!isEditing}
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100"
