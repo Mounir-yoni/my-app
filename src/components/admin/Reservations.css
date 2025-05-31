@@ -1,0 +1,87 @@
+.reservations-container {
+    padding: 20px;
+}
+
+.reservations-container h1 {
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+.reservations-table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.reservations-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.reservations-table th,
+.reservations-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.reservations-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.reservations-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-badge.pending {
+    background-color: #f1c40f;
+    color: #fff;
+}
+
+.status-badge.approved {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.status-badge.rejected {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.approve-btn {
+    color: #2ecc71;
+}
+
+.reject-btn {
+    color: #e74c3c;
+}
+
+.action-buttons button:hover {
+    background-color: #f8f9fa;
+}

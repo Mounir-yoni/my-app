@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.airplane-Home {
+  position: absolute;
+  top: 300px;
+  right: 15px;
+  rotate: 240deg;
+  z-index: 1;
+  animation: fly 25s linear infinite;
+  opacity: 0;
+}
+
+@keyframes fly {
+  0% {
+    transform: translate(0, 0) opacity(0);
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(1000px, -1200px);
+  }
+}
+
+.airplane-Home:hover {
+  animation-play-state: paused;
+}
+
+@media screen and (max-width: 768px) {
+  .airplane-Home {
+    top: 150px;
+    animation-duration: 15s;
+    rotate: 165deg;
+  }
+
+
+  @keyframes fly {
+    0% {
+      transform: translate(0, 0) opacity(0);
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(800px) translateY(-1000px);
+    }
+  }
+}
