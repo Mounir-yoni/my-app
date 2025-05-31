@@ -4,14 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { getParsedLocalStorage, getLocalStorage } from "../utils/storage";
 
 const BookingForm = ({ offer, onClose }) => {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+    const [user, setUser] = useState(getParsedLocalStorage("user"));
     const [formData, setFormData] = useState({
-        firstName: user.Firstname,
-        lastName: user.Lastname,
-        email: user.email,
-        phone: user.phone,
+        firstName: user?.Firstname || '',
+        lastName: user?.Lastname || '',
+        email: user?.email || '',
+        phone: user?.phone || '',
         numberOfPeople: 1,
         specialRequests: ""
     });
@@ -33,15 +34,15 @@ const BookingForm = ({ offer, onClose }) => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
 
             const bookingData = {
                 voyage: offer._id,
-                numberOfPeople:formData.numberOfPeople,
-                specialRequests:formData.specialRequests,
-                phone:formData.phone,
+                numberOfPeople: formData.numberOfPeople,
+                specialRequests: formData.specialRequests,
+                phone: formData.phone,
             }
-        
+
             const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations', bookingData, {
                 headers: {
                     'Authorization': `Bearer ${token}`

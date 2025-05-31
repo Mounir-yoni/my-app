@@ -6,6 +6,7 @@ import { getOffers } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { setLocalStorage, getParsedLocalStorage } from '../utils/storage';
 
 const OffersSlider = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -19,7 +20,7 @@ const OffersSlider = () => {
                 const data = await getOffers({ url: '/voyages' });
                 const offersArray = Array.isArray(data) ? data : data.data || [];
                 // Cache the offers data
-                localStorage.setItem('cachedOffers', JSON.stringify(offersArray));
+                setLocalStorage('cachedOffers', JSON.stringify(offersArray));
                 // Duplicate offers for infinite effect
                 const duplicatedOffers = [...offersArray, ...offersArray, ...offersArray];
                 setOffers(duplicatedOffers);
@@ -32,10 +33,9 @@ const OffersSlider = () => {
         };
 
         // Try to load from cache first
-        const cachedOffers = localStorage.getItem('cachedOffers');
+        const cachedOffers = getParsedLocalStorage('cachedOffers');
         if (cachedOffers) {
-            const offersArray = JSON.parse(cachedOffers);
-            const duplicatedOffers = [...offersArray, ...offersArray, ...offersArray];
+            const duplicatedOffers = [...cachedOffers, ...cachedOffers, ...cachedOffers];
             setOffers(duplicatedOffers);
             setLoading(false);
         }
