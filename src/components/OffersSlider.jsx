@@ -203,14 +203,11 @@ const OffersSlider = () => {
                                         transition={{ duration: 0.3 }}
                                     >
                                         <div className="relative h-48">
-                                            <Image
-                                                src={`http://localhost:8000${offer.imagePath}`}
+                                            <img
+                                                src={offer.image}
                                                 alt={offer.title}
-                                                fill
-                                                className="object-cover"
+                                                className="absolute inset-0 w-full h-full object-cover"
                                                 loading="lazy"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                quality={75}
                                             />
                                         </div>
                                         <div className="p-4">

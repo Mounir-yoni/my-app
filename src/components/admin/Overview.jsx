@@ -22,7 +22,7 @@ const Overview = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8000/api/v1/statistic', {
+        const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/statistic', {
           headers: {
             Authorization: `Bearer ${token}`
           }

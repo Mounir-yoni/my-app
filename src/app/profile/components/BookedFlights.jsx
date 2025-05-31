@@ -28,7 +28,7 @@ const BookedFlights = () => {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const response = await axios.get('http://localhost:8000/api/v1/reservations/my-reservations', {
+                const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations/my-reservations', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

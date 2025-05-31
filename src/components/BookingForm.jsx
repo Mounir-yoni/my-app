@@ -42,7 +42,7 @@ const BookingForm = ({ offer, onClose }) => {
                 phone:formData.phone,
             }
         
-            const response = await axios.post('http://localhost:8000/api/v1/reservations', bookingData, {
+            const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations', bookingData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

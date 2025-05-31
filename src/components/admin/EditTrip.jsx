@@ -32,7 +32,7 @@ const EditTrip = ({ tripId }) => {
         const fetchTrip = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:8000/api/v1/voyages/${tripId}`, {
+                const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -91,7 +91,7 @@ const EditTrip = ({ tripId }) => {
             // Remove the File object from jsonData
             delete jsonData.image;
 
-            await axios.put(`http://localhost:8000/api/v1/voyages/${tripId}`, jsonData, {
+            await axios.put(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, jsonData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

@@ -71,10 +71,14 @@ export default function AuthForm() {
 
         try {
             if (isLogin) {
-                const response = await axios.post('http://localhost:8000/api/v1/auth/login', {
+                const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/auth/login', {
                     email: formData.email,
                     password: formData.password
-                });
+                },
+                {
+                    withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
+                  }
+            );
 
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
@@ -82,7 +86,7 @@ export default function AuthForm() {
                     router.push('/');
                 }
             } else {
-                const response = await axios.post('http://localhost:8000/api/v1/auth/signup', {
+                const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/auth/signup', {
                     Firstname: formData.firstName,
                     Lastname: formData.lastName,
                     email: formData.email,
@@ -92,7 +96,11 @@ export default function AuthForm() {
                     address: formData.address,
                     ville: formData.ville,
                     postalCode: formData.postalCode
-                });
+                },
+                {
+                    withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
+                  }
+                );
 
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);

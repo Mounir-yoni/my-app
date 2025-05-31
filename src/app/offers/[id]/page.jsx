@@ -32,7 +32,7 @@ const OfferDetails = () => {
                 setLoading(false);
             }
 
-            const response = await axios.get(`http://localhost:8000/api/v1/voyages/${id}`);
+            const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${id}`);
             const offerData = response.data.data;
             setOffer(offerData);
             // Cache the offer data
@@ -98,7 +98,7 @@ const OfferDetails = () => {
                     {/* Left Column - Image */}
                     <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-xl">
                         <Image
-                            src={`${offer.imageUrl}`}
+                            src={`${offer.image}`}
                             alt={offer.title}
                             fill
                             className="object-cover"
@@ -134,14 +134,11 @@ const OfferDetails = () => {
                                     <div>
                                         <p className="text-sm text-gray-500">Destinations</p>
                                         <div className="flex flex-wrap gap-2 mt-1">
-                                            {offer.ville.map((city, index) => (
                                                 <span
-                                                    key={index}
                                                     className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
                                                 >
-                                                    {city}
+                                                    {offer.ville}
                                                 </span>
-                                            ))}
                                         </div>
                                     </div>
                                 </div>

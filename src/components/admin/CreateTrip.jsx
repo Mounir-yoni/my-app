@@ -62,10 +62,8 @@ const CreateTrip = () => {
             // Append all form fields to FormData
             Object.keys(formData).forEach(key => {
                 if (key === 'ville') {
-                    // Handle array of cities
-                    formData.ville.forEach(city => {
-                        formDataToSend.append('ville[]', city);
-                    });
+                    // Convert array of cities to a comma-separated string
+                    formDataToSend.append('ville', formData.ville.join(', '));
                 } else if (key === 'image' && formData.image) {
                     // Handle image file
                     formDataToSend.append('image', formData.image);
@@ -78,8 +76,8 @@ const CreateTrip = () => {
             if (!formData.remaining_places) {
                 formDataToSend.set('remaining_places', formData.nombre_de_personne);
             }
-
-            const response = await axios.post('http://localhost:8000/api/v1/voyages', formDataToSend, {
+            console.log(formDataToSend);
+            const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/voyages', formDataToSend, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'

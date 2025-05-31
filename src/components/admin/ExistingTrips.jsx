@@ -25,7 +25,7 @@ const ExistingTrips = () => {
     const fetchTrips = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:8000/api/v1/voyages', {
+            const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/voyages', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -47,7 +47,7 @@ const ExistingTrips = () => {
         if (window.confirm('Are you sure you want to delete this trip?')) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.delete(`http://localhost:8000/api/v1/voyages/${tripId}`, {
+                await axios.delete(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -65,7 +65,7 @@ const ExistingTrips = () => {
         setError(null);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:8000/api/v1/voyages/${tripId}`, {
+            const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -144,7 +144,7 @@ const ExistingTrips = () => {
 
             console.log('Submitting trip data:', jsonData);
             console.log(editingTrip._id);
-            await axios.put(`http://localhost:8000/api/v1/voyages/${editingTrip._id}`, jsonData, {
+            await axios.put(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${editingTrip._id}`, jsonData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

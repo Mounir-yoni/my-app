@@ -108,7 +108,7 @@ const Reservations = () => {
         return acc;
       }, {});
       console.log(params);
-      const response = await axios.get('http://localhost:8000/api/v1/reservations', {
+      const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations', {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -128,7 +128,7 @@ const Reservations = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:8000/api/v1/reservations/${selectedReservation.id}`,
+        `https://back-end-agence-de-voyage.onrender.com/api/v1/reservations/${selectedReservation.id}`,
         updates,
         {
           headers: {

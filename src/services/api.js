@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back-end-agence-de-voyage.onrender.com/api/v1';
 const token = process.env.NEXT_PUBLIC_TOKEN;
 
 const api = axios.create({

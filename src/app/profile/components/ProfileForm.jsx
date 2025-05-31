@@ -31,7 +31,7 @@ export default function ProfileForm() {
             }
 
             try {
-                const response = await axios.get('http://localhost:8000/api/v1/users/me', {
+                const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/users/me', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -79,7 +79,7 @@ export default function ProfileForm() {
 
         try {
             const response = await axios.patch(
-                'http://localhost:8000/api/v1/users/updateMe',
+                'https://back-end-agence-de-voyage.onrender.com/api/v1/users/updateMe',
                 {
                     Firstname: formData.firstName,
                     Lastname: formData.lastName,

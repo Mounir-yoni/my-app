@@ -47,7 +47,7 @@ const Security = () => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.put(
-                `http://localhost:8000/api/v1/users/updatepassword`,
+                `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updatepassword`,
                 {
                     currentPassword: formData.currentPassword,
                     password: formData.newPassword,
