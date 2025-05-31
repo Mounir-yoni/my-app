@@ -17,10 +17,21 @@ const OffersSlider = () => {
     useEffect(() => {
         const fetchOffers = async () => {
             try {
-                const data = await getOffers({ url: '/voyages' });
+                // Try to load from cache first
+                const cachedOffers = getParsedLocalStorage('cachedOffers');
+                if (cachedOffers) {
+                    const duplicatedOffers = [...cachedOffers, ...cachedOffers, ...cachedOffers];
+                    setOffers(duplicatedOffers);
+                    setLoading(false);
+                }
+
+                // Fetch fresh data
+                const data = await getOffers();
                 const offersArray = Array.isArray(data) ? data : data.data || [];
+
                 // Cache the offers data
                 setLocalStorage('cachedOffers', JSON.stringify(offersArray));
+
                 // Duplicate offers for infinite effect
                 const duplicatedOffers = [...offersArray, ...offersArray, ...offersArray];
                 setOffers(duplicatedOffers);
@@ -31,14 +42,6 @@ const OffersSlider = () => {
                 setLoading(false);
             }
         };
-
-        // Try to load from cache first
-        const cachedOffers = getParsedLocalStorage('cachedOffers');
-        if (cachedOffers) {
-            const duplicatedOffers = [...cachedOffers, ...cachedOffers, ...cachedOffers];
-            setOffers(duplicatedOffers);
-            setLoading(false);
-        }
 
         fetchOffers();
     }, []);

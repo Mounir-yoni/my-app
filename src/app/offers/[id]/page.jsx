@@ -20,6 +20,21 @@ const OfferDetails = () => {
     const [error, setError] = useState(null);
     const [showBookingForm, setShowBookingForm] = useState(false);
 
+    const handleBooking = async () => {
+        try {
+            const token = getLocalStorage('token');
+            if (!token) {
+                showNotification('Please log in to book this offer', 'error');
+                router.push('/auth');
+                return;
+            }
+            setShowBookingForm(true);
+        } catch (err) {
+            setError('Failed to book the offer');
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const fetchOffer = async () => {
             try {
@@ -37,21 +52,6 @@ const OfferDetails = () => {
                 setLoading(false);
             } catch (err) {
                 setError('Failed to load offer details');
-                setLoading(false);
-            }
-        };
-
-        const handleBooking = async () => {
-            try {
-                const token = getLocalStorage('token');
-                if (!token) {
-                    showNotification('Please log in to book this offer', 'error');
-                    router.push('/auth');
-                    return;
-                }
-                setShowBookingForm(true);
-            } catch (err) {
-                setError('Failed to book the offer');
                 setLoading(false);
             }
         };
