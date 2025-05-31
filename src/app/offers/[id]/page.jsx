@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faCalendar, faUsers, faMapMarkerAlt, faCheck, faArrowLeft, faTag } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faCalendar, faUsers, faMapMarkerAlt, faCheck, faArrowLeft, faTag, faCalendarAlt, faHotel, faPlane, faBus, faShip, faUtensils, faWifi, faSwimmingPool, faDumbbell, faSpa, faParking, faSnowflake, faSun, faUmbrellaBeach, faMountain, faCity, faTree, faWater, faShoppingBag, faTicketAlt, faInfoCircle, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import BookingForm from "../../../components/BookingForm";
 import Link from "next/link";
 import { useNotification } from "../../../context/NotificationContext";
@@ -19,6 +19,26 @@ const OfferDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showBookingForm, setShowBookingForm] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
+    const [numberOfPeople, setNumberOfPeople] = useState(1);
+    const [bookingError, setBookingError] = useState('');
+    const [bookingSuccess, setBookingSuccess] = useState('');
+
+    const handleBooking = async () => {
+        try {
+            const token = getLocalStorage('token');
+            if (!token) {
+                showNotification('Please log in to book this offer', 'error');
+                router.push('/auth');
+                return;
+            }
+
+            setShowBookingForm(true);
+        } catch (err) {
+            setError('Failed to book the offer');
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchOffer = async () => {
@@ -41,21 +61,6 @@ const OfferDetails = () => {
             }
         };
 
-        const handleBooking = async () => {
-            try {
-                const token = getLocalStorage('token');
-                if (!token) {
-                    showNotification('Please log in to book this offer', 'error');
-                    router.push('/auth');
-                    return;
-                }
-                setShowBookingForm(true);
-            } catch (err) {
-                setError('Failed to book the offer');
-                setLoading(false);
-            }
-        };
-
         fetchOffer();
     }, [id]);
 
@@ -71,7 +76,8 @@ const OfferDetails = () => {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-red-600 text-center">
-                    <p className="text-xl">{error}</p>
+                    <FontAwesomeIcon icon={faExclamationTriangle} className="text-4xl mb-4" />
+                    <p>{error}</p>
                     <button
                         onClick={() => {
                             fetchOffer();
