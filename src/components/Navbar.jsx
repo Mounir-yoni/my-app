@@ -13,6 +13,7 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [width, setWidth] = useState(0);
     const pathname = usePathname();
 
     useEffect(() => {
@@ -20,6 +21,21 @@ const Navbar = () => {
         if (storedUser) {
             setUser(storedUser);
         }
+
+        // Set initial width
+        setWidth(window.innerWidth);
+
+        // Add event listener for window resize
+        const handleResize = () => {
+            setWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     const handleLogout = () => {
@@ -37,15 +53,14 @@ const Navbar = () => {
         return pathname === path;
     };
     const userinfo = getParsedLocalStorage('user');
-    const width = window.innerWidth;
 
     // Check if user has admin or manager role
     const isAdminOrManager = userinfo?.role === 'admin' || userinfo?.role === 'superadmin' || userinfo?.role === 'manager';
 
     return (
         <nav className={`bg-white shadow-md fixed w-full z-50`}>
-            <div className="  px-4 ">
-                <div className={`flex justify-between items-center ${window.innerWidth > 990 ? 'w-[90%]' : 'max-w-full'} h-20 mx-auto`}>
+            <div className="px-4">
+                <div className={`flex justify-between items-center ${width > 990 ? 'w-[90%]' : 'max-w-full'} h-20 mx-auto`}>
                     {/* Logo */}
                     <Link href="/" className={`flex ${width > 990 ? 'ml-0' : 'm-[100px]'}`}>
                         <span className="text-2xl font-bold text-blue-900">Travel Agency</span>
