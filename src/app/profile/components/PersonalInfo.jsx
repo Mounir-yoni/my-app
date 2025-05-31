@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+import { getLocalStorage, getParsedLocalStorage, setLocalStorage } from '../../../utils/storage';
 
 const PersonalInfo = () => {
-    const userinfo = JSON.parse(localStorage.getItem("user"));
+    const userinfo = getParsedLocalStorage("user");
     console.log(userinfo);
     const [formData, setFormData] = useState({
         firstName: userinfo.Firstname,
@@ -39,7 +40,7 @@ const PersonalInfo = () => {
         setSuccess("");
 
         try {
-            const token = localStorage.getItem("token");
+            const token = getLocalStorage("token");
             const response = await axios.put(
                 `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updateme`,
                 formData,
@@ -63,7 +64,7 @@ const PersonalInfo = () => {
                     postalCode: formData.postalCode,
                     country: formData.country
                 };
-                localStorage.setItem("user", JSON.stringify(updatedUser));
+                setLocalStorage("user", JSON.stringify(updatedUser));
 
                 setSuccess("Informations mises à jour avec succès");
                 setIsEditing(false);

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { FaPlus } from 'react-icons/fa';
+import { getLocalStorage } from '../../utils/storage';
 
 const CreateTrip = () => {
     const [formData, setFormData] = useState({
@@ -54,7 +55,7 @@ const CreateTrip = () => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
 
             // Create FormData object
             const formDataToSend = new FormData();

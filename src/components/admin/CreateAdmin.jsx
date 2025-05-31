@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { FaUserPlus, FaLock } from 'react-icons/fa';
+import { getLocalStorage } from '../../utils/storage';
 
 const CreateAdmin = () => {
     const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ const CreateAdmin = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const jsonData = {
                 Firstname: formData.nom,
                 Lastname: formData.prenom,

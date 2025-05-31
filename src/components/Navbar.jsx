@@ -5,27 +5,28 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseUser, faTags, faScrewdriverWrench, faUser, faEnvelope, faUserCircle, faSignOutAlt, faPersonRifle, faDashboard } from '@fortawesome/free-solid-svg-icons';
+import { getLocalStorage, getParsedLocalStorage, removeLocalStorage } from '../utils/storage';
 
 const Navbar = () => {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
-        // Check if user is logged in
-        const storedUser = localStorage.getItem('user');
+        const storedUser = getParsedLocalStorage('user');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            setUser(storedUser);
         }
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        removeLocalStorage('token');
+        removeLocalStorage('user');
         setUser(null);
         router.push('/');
-        window.location.reload();
     };
 
     const toggleMenu = () => {
@@ -35,7 +36,7 @@ const Navbar = () => {
     const isActive = (path) => {
         return pathname === path;
     };
-    const userinfo = JSON.parse(localStorage.getItem('user'));
+    const userinfo = getParsedLocalStorage('user');
     const width = window.innerWidth;
 
     // Check if user has admin or manager role
@@ -99,7 +100,7 @@ const Navbar = () => {
 
                     {/* Connection Button */}
                     <div className="hidden md:flex items-center">
-                        {localStorage.getItem('token') ? (
+                        {getLocalStorage('token') ? (
                             <div className="relative">
                                 <button
                                     onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -226,7 +227,7 @@ const Navbar = () => {
                             </Link>
 
                             {/* Mobile Authentication Section */}
-                            {localStorage.getItem('token') ? (
+                            {getLocalStorage('token') ? (
                                 <>
                                     <div className="border-t border-gray-200 pt-4 mt-2">
                                         <div className="flex items-center space-x-2 text-amber-700 mb-4">

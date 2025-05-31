@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { FaInfoCircle } from 'react-icons/fa';
+import { getLocalStorage } from '../../utils/storage';
 
 const EditTrip = ({ tripId }) => {
     const router = useRouter();
@@ -31,7 +32,7 @@ const EditTrip = ({ tripId }) => {
     useEffect(() => {
         const fetchTrip = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = getLocalStorage('token');
                 const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -81,7 +82,7 @@ const EditTrip = ({ tripId }) => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const jsonData = {
                 ...formData,
                 remaining_places: formData.remaining_places || formData.nombre_de_personne,

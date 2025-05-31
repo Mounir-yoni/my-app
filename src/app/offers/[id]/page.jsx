@@ -9,6 +9,7 @@ import BookingForm from "../../../components/BookingForm";
 import Link from "next/link";
 import { useNotification } from "../../../context/NotificationContext";
 import Image from "next/image";
+import { getLocalStorage, setLocalStorage } from '../../../utils/storage';
 
 const OfferDetails = () => {
     const { id } = useParams();
@@ -20,39 +21,43 @@ const OfferDetails = () => {
     const [showBookingForm, setShowBookingForm] = useState(false);
 
     useEffect(() => {
-        fetchOfferDetails();
-    }, [id]);
+        const fetchOffer = async () => {
+            try {
+                const cachedOffer = getLocalStorage(`offer_${id}`);
+                if (cachedOffer) {
+                    setOffer(JSON.parse(cachedOffer));
+                    setLoading(false);
+                    return;
+                }
 
-    const fetchOfferDetails = async () => {
-        try {
-            // Try to get from cache first
-            const cachedOffer = localStorage.getItem(`offer_${id}`);
-            if (cachedOffer) {
-                setOffer(JSON.parse(cachedOffer));
+                const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${id}`);
+                const offerData = response.data.data;
+                setOffer(offerData);
+                setLocalStorage(`offer_${id}`, JSON.stringify(offerData));
+                setLoading(false);
+            } catch (err) {
+                setError('Failed to load offer details');
                 setLoading(false);
             }
+        };
 
-            const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${id}`);
-            const offerData = response.data.data;
-            setOffer(offerData);
-            // Cache the offer data
-            localStorage.setItem(`offer_${id}`, JSON.stringify(offerData));
-            setLoading(false);
-        } catch (err) {
-            setError('Failed to fetch offer details. Please try again later.');
-            setLoading(false);
-        }
-    };
+        const handleBooking = async () => {
+            try {
+                const token = getLocalStorage('token');
+                if (!token) {
+                    showNotification('Please log in to book this offer', 'error');
+                    router.push('/auth');
+                    return;
+                }
+                setShowBookingForm(true);
+            } catch (err) {
+                setError('Failed to book the offer');
+                setLoading(false);
+            }
+        };
 
-    const handleBookNow = () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            showNotification('Please log in to book this offer', 'error');
-            router.push('/auth');
-            return;
-        }
-        setShowBookingForm(true);
-    };
+        fetchOffer();
+    }, [id]);
 
     if (loading) {
         return (
@@ -68,7 +73,9 @@ const OfferDetails = () => {
                 <div className="text-red-600 text-center">
                     <p className="text-xl">{error}</p>
                     <button
-                        onClick={fetchOfferDetails}
+                        onClick={() => {
+                            fetchOffer();
+                        }}
                         className="mt-4 px-4 py-2 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition"
                     >
                         Try Again
@@ -134,11 +141,11 @@ const OfferDetails = () => {
                                     <div>
                                         <p className="text-sm text-gray-500">Destinations</p>
                                         <div className="flex flex-wrap gap-2 mt-1">
-                                                <span
-                                                    className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
-                                                >
-                                                    {offer.ville}
-                                                </span>
+                                            <span
+                                                className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
+                                            >
+                                                {offer.ville}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -176,7 +183,7 @@ const OfferDetails = () => {
                         </div>
 
                         <button
-                            onClick={handleBookNow}
+                            onClick={handleBooking}
                             className="w-full mt-8 bg-amber-700 text-white py-4 rounded-xl hover:bg-amber-800 transition text-base font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                         >
                             Reserver Maintenant✨

@@ -6,6 +6,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faCity, faHashtag } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
+import { getLocalStorage, setLocalStorage } from '../../../utils/storage';
 
 export default function ProfileForm() {
     const router = useRouter();
@@ -24,7 +25,7 @@ export default function ProfileForm() {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             if (!token) {
                 router.push('/auth');
                 return;
@@ -67,17 +68,16 @@ export default function ProfileForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
         setIsLoading(true);
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-            router.push('/auth');
-            return;
-        }
+        setError(null);
 
         try {
+            const token = getLocalStorage('token');
+            if (!token) {
+                router.push('/auth');
+                return;
+            }
+
             const response = await axios.patch(
                 'https://back-end-agence-de-voyage.onrender.com/api/v1/users/updateMe',
                 {
@@ -96,7 +96,7 @@ export default function ProfileForm() {
             );
 
             setSuccess('Profile updated successfully!');
-            localStorage.setItem('user', JSON.stringify(response.data.data));
+            setLocalStorage('user', JSON.stringify(response.data.data));
         } catch (err) {
             console.error('Error updating profile:', err);
             setError(err.response?.data?.message || 'Failed to update profile. Please try again.');

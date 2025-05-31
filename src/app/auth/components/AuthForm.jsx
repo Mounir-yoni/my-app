@@ -6,6 +6,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
+import { setLocalStorage } from '../../../utils/storage';
 
 export default function AuthForm() {
     const router = useRouter();
@@ -63,26 +64,26 @@ export default function AuthForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setIsLoading(true);
+        setError(null);
 
         if (!validateForm()) return;
 
-        setIsLoading(true);
-
         try {
+            const token = localStorage.getItem('token');
             if (isLogin) {
                 const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/auth/login', {
                     email: formData.email,
                     password: formData.password
                 },
-                {
-                    withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
-                  }
-            );
+                    {
+                        withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
+                    }
+                );
 
                 if (response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    setLocalStorage('token', response.data.token);
+                    setLocalStorage('user', JSON.stringify(response.data.user));
                     router.push('/');
                 }
             } else {
@@ -97,14 +98,14 @@ export default function AuthForm() {
                     ville: formData.ville,
                     postalCode: formData.postalCode
                 },
-                {
-                    withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
-                  }
+                    {
+                        withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
+                    }
                 );
 
                 if (response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    setLocalStorage('token', response.data.token);
+                    setLocalStorage('user', JSON.stringify(response.data.user));
                     router.push('/');
                 }
             }

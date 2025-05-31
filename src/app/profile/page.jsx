@@ -1,15 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PersonalInfo from "./components/PersonalInfo";
 import Security from "./components/Security";
 import BookedFlights from "./components/BookedFlights";
+import { getLocalStorage } from '../../utils/storage';
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
-    if (!localStorage.getItem("token")) {
-        window.location.href = "/";
-    }
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState("personal");
+
+    useEffect(() => {
+        if (!getLocalStorage("token")) {
+            router.push('/auth');
+        }
+    }, [router]);
 
     const renderContent = () => {
         switch (activeTab) {

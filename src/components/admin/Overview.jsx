@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaUsers, FaRoute, FaCalendarCheck, FaMoneyBillWave, FaClipboardList, FaCheckCircle, FaClock } from 'react-icons/fa';
+import { getLocalStorage } from '../../utils/storage';
 
 const Overview = () => {
   const [stats, setStats] = useState({
@@ -21,7 +22,7 @@ const Overview = () => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
+        const token = getLocalStorage('token');
         const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/statistic', {
           headers: {
             Authorization: `Bearer ${token}`

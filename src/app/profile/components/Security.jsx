@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+import { getLocalStorage } from '../../../utils/storage';
 
 const Security = () => {
 
@@ -45,7 +46,7 @@ const Security = () => {
         setIsSaving(true);
 
         try {
-            const token = localStorage.getItem("token");
+            const token = getLocalStorage("token");
             const response = await axios.put(
                 `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updatepassword`,
                 {

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaEye, FaTimes, FaPlus, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import { getLocalStorage } from '../../utils/storage';
 
 const ExistingTrips = () => {
     const [trips, setTrips] = useState([]);
@@ -24,7 +25,7 @@ const ExistingTrips = () => {
     // Fetch all trips
     const fetchTrips = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/voyages', {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -46,7 +47,7 @@ const ExistingTrips = () => {
     const handleDelete = async (tripId) => {
         if (window.confirm('Are you sure you want to delete this trip?')) {
             try {
-                const token = localStorage.getItem('token');
+                const token = getLocalStorage('token');
                 await axios.delete(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -64,7 +65,7 @@ const ExistingTrips = () => {
         setLoadingTrip(true);
         setError(null);
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${tripId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -128,7 +129,7 @@ const ExistingTrips = () => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const jsonData = {
                 ...editingTrip,
                 remaining_places: editingTrip.remaining_places || editingTrip.nombre_de_personne

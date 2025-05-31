@@ -15,6 +15,7 @@ import {
     faChevronDown,
     faChevronUp
 } from "@fortawesome/free-solid-svg-icons";
+import { getLocalStorage } from '../../../utils/storage';
 
 const BookedFlights = () => {
     const [reservations, setReservations] = useState([]);
@@ -25,7 +26,7 @@ const BookedFlights = () => {
     useEffect(() => {
         const fetchReservations = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = getLocalStorage('token');
                 if (!token) return;
 
                 const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations/my-reservations', {

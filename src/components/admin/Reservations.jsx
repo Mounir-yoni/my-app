@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaCheck, FaTimes, FaPhone, FaUser, FaUsers, FaMoneyBillWave, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaSearch, FaFilter } from 'react-icons/fa';
+import { getLocalStorage } from '../../utils/storage';
 
 const StatusModal = ({ isOpen, onClose, reservation, onUpdate }) => {
   const [status, setStatus] = useState(reservation?.status || '');
@@ -92,41 +93,40 @@ const Reservations = () => {
   });
 
   useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        setLoading(true);
+        const token = getLocalStorage('token');
+
+        // Create params object with only non-empty filters
+        const params = Object.entries(filters).reduce((acc, [key, value]) => {
+          if (value && value.trim() !== '') {
+            acc[key] = value;
+          }
+          return acc;
+        }, {});
+        console.log(params);
+        const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          params
+        });
+        setReservations(response.data.data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch reservations. Please try again later.');
+        console.error('Error fetching reservations:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchReservations();
-  }, [filters]);
-
-  const fetchReservations = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-
-      // Create params object with only non-empty filters
-      const params = Object.entries(filters).reduce((acc, [key, value]) => {
-        if (value && value.trim() !== '') {
-          acc[key] = value;
-        }
-        return acc;
-      }, {});
-      console.log(params);
-      const response = await axios.get('https://back-end-agence-de-voyage.onrender.com/api/v1/reservations', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        params
-      });
-      setReservations(response.data.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch reservations. Please try again later.');
-      console.error('Error fetching reservations:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, []);
 
   const handleStatusUpdate = async (updates) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
       await axios.put(
         `https://back-end-agence-de-voyage.onrender.com/api/v1/reservations/${selectedReservation.id}`,
         updates,
