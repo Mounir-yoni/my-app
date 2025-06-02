@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
-import { setLocalStorage } from '../../../utils/storage';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://back-end-obur.onrender.com/api/v1';
 
 export default function AuthForm() {
     const router = useRouter();
@@ -25,10 +26,13 @@ export default function AuthForm() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    // ✅ Redirect if already authenticated
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            router.push('/');
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('token');
+            if (token) {
+                router.push('/');
+            }
         }
     }, [router]);
 
@@ -65,31 +69,31 @@ export default function AuthForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setError(null);
+        setError('');
 
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const token = localStorage.getItem('token');
             if (isLogin) {
-                const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/auth/login', {
+                const response = await axios.post(`${API_URL}/auth/login`, {
                     email: formData.email,
                     password: formData.password
-                },
-                    {
-                        withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
-                    }
-                );
+                }, {
+                    withCredentials: true
+                });
 
                 if (response.data.token) {
-                    setLocalStorage('token', response.data.token);
-                    setLocalStorage('user', JSON.stringify(response.data.user));
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
                     router.push('/');
                 }
             } else {
-                const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/auth/signup', {
-                    Firstname: formData.firstName,
-                    Lastname: formData.lastName,
+                const response = await axios.post(`${API_URL}/auth/signup`, {
+                    firstname: formData.firstName,
+                    lastname: formData.lastName,
                     email: formData.email,
                     password: formData.password,
                     passwordConfirm: formData.confirmPassword,
@@ -97,21 +101,23 @@ export default function AuthForm() {
                     address: formData.address,
                     ville: formData.ville,
                     postalCode: formData.postalCode
-                },
-                    {
-                        withCredentials: true, // فقط إذا كنت تستخدم الكوكيز
-                    }
-                );
+                }, {
+                    withCredentials: true
+                });
 
                 if (response.data.token) {
-                    setLocalStorage('token', response.data.token);
-                    setLocalStorage('user', JSON.stringify(response.data.user));
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
                     router.push('/');
                 }
             }
         } catch (err) {
-            console.log(err);
-            setError(err.response?.data?.message || 'An error occurred. Please try again.');
+            console.error('Auth error:', err);
+            if (err.message.includes('Network Error')) {
+                setError('Unable to connect to the server. Please check your internet connection and try again.');
+            } else {
+                setError(err.response?.data?.message || err.message || 'An error occurred. Please try again.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -126,9 +132,13 @@ export default function AuthForm() {
             confirmPassword: '',
             firstName: '',
             lastName: '',
-            phone: ''
+            phone: '',
+            address: '',
+            ville: '',
+            postalCode: ''
         });
     };
+
 
     return (
         <>

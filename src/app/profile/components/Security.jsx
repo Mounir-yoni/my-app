@@ -48,7 +48,7 @@ const Security = () => {
         try {
             const token = getLocalStorage("token");
             const response = await axios.put(
-                `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updatepassword`,
+                `https://back-end-obur.onrender.com/api/v1/users/updatepassword`,
                 {
                     currentPassword: formData.currentPassword,
                     password: formData.newPassword,
@@ -63,6 +63,11 @@ const Security = () => {
             );
 
             if (response.data) {
+                // Update token if a new one is provided
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                }
+
                 // Clear form
                 setFormData({
                     currentPassword: "",
@@ -73,6 +78,7 @@ const Security = () => {
                 setSuccess("Mot de passe modifié avec succès");
             }
         } catch (err) {
+            console.error('Error updating password:', err);
             setError(err.response?.data?.message || "Une erreur est survenue lors de la modification du mot de passe");
         } finally {
             setIsSaving(false);

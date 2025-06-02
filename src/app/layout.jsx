@@ -71,13 +71,15 @@ export default function RootLayout({ children }) {
                 <link rel="canonical" href="https://your-domain.com" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </head>
-            <body className={montserrat.className}>
+            <body className={`${montserrat.className} `}>
                 <Navbar />
-                <NotificationProvider>
-                    {children}
-                </NotificationProvider>
+                <main className="pt-20">
+                    <NotificationProvider>
+                        {children}
+                    </NotificationProvider>
+                </main>
                 <Footer />
             </body>
         </html>
     );
-} 
+}

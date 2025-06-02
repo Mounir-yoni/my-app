@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['localhost', 'res.cloudinary.com', 'back-end-agence-de-voyage.onrender.com'],
+        domains: ['back-end-obur.onrender.com'],
+    },
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'https://back-end-obur.onrender.com/api/v1/:path*',
+            },
+        ];
+    },
+    images: {
         remotePatterns: [
             {
                 protocol: 'http',

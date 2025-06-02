@@ -1,59 +1,41 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { FaChartBar, FaCalendarAlt, FaPlus, FaList, FaUserPlus, FaHome, FaBars, FaTimes } from 'react-icons/fa';
-import Overview from '../../components/admin/Overview.jsx';
-import Reservations from '../../components/admin/Reservations.jsx';
-import CreateTrip from '../../components/admin/CreateTrip.jsx';
-import ExistingTrips from '../../components/admin/ExistingTrips.jsx';
-import CreateAdmin from '../../components/admin/CreateAdmin.jsx';
+import { useRouter } from 'next/navigation';
+import { FaHome, FaUsers, FaCalendarAlt, FaSignOutAlt, FaBars, FaTimes, FaChartBar, FaPlus, FaList, FaUserPlus } from 'react-icons/fa';
+import Reservations from '../../components/admin/Reservations';
+import Users from '../../components/admin/Users';
+import Overview from '../../components/admin/Overview';
+import CreateTrip from '../../components/admin/CreateTrip';
+import ExistingTrips from '../../components/admin/ExistingTrips';
+import CreateAdmin from '../../components/admin/CreateAdmin';
 
-export default function AdminPage() {
-  const [activeComponent, setActiveComponent] = useState('overview');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const AdminPage = () => {
+  const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  // Close sidebar when clicking outside on mobile
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (window.innerWidth < 768 && isSidebarOpen) {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && !sidebar.contains(event.target) && !event.target.closest('#sidebar-toggle')) {
-          setIsSidebarOpen(false);
-        }
-      }
-    };
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/auth');
+    }
+  }, [router]);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isSidebarOpen]);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/auth');
+  };
 
-  // Close sidebar when screen size changes to desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsSidebarOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const menuItems = [
-    { id: 'overview', label: 'Overview', icon: <FaChartBar /> },
-    { id: 'reservations', label: 'Reservations', icon: <FaCalendarAlt /> },
-    { id: 'create-trip', label: 'Create Trip', icon: <FaPlus /> },
-    { id: 'trips', label: 'Existing Trips', icon: <FaList /> },
-    { id: 'create-admin', label: 'Create Admin', icon: <FaUserPlus /> },
-  ];
-
-  const renderComponent = () => {
-    switch (activeComponent) {
+  const renderContent = () => {
+    switch (activeTab) {
       case 'overview':
         return <Overview />;
       case 'reservations':
         return <Reservations />;
+      case 'users':
+        return <Users />;
       case 'create-trip':
         return <CreateTrip />;
       case 'trips':
@@ -65,62 +47,79 @@ export default function AdminPage() {
     }
   };
 
+  const menuItems = [
+    { id: 'overview', label: 'Tableau de bord', icon: <FaChartBar /> },
+    { id: 'reservations', label: 'Réservations', icon: <FaCalendarAlt /> },
+    { id: 'users', label: 'Utilisateurs', icon: <FaUsers /> },
+    { id: 'create-trip', label: 'Créer un voyage', icon: <FaPlus /> },
+    { id: 'trips', label: 'Voyages existants', icon: <FaList /> },
+    { id: 'create-admin', label: 'Créer un admin', icon: <FaUserPlus /> },
+  ];
+
   return (
-    <div className="flex min-h-screen bg-gray-50 pt-16">
-      {/* Mobile Sidebar Toggle Button */}
+    <div className="flex h-screen bg-gray-50">
+      {/* Mobile Sidebar Toggle */}
       <button
-        id="sidebar-toggle"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-20 left-4 z-50 p-2 rounded-lg bg-[#2c3e50] text-white md:hidden"
+        className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-md lg:hidden"
       >
-        {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        {isSidebarOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       {/* Sidebar */}
       <aside
-        id="sidebar"
-        className={`fixed inset-y-0 left-0 z-40 w-64 mt-6 bg-[#2c3e50] text-white transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:relative lg:block`}
       >
         <div className="flex flex-col h-full">
-          <div className="p-4">
-            <h2 className="text-2xl font-bold mb-8">Admin Panel</h2>
-            <nav className="space-y-2">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveComponent(item.id);
-                    if (window.innerWidth < 768) {
-                      setIsSidebarOpen(false);
-                    }
-                  }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${activeComponent === item.id
-                    ? 'bg-white text-[#2c3e50]'
-                    : 'text-white hover:bg-white/10'
-                    }`}
-                >
-                  {item.icon}
-                  <span>{item.label}</span>
-                </button>
-              ))}
-            </nav>
+          <div className="p-6 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
+          </div>
+
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === item.id
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <FaSignOutAlt />
+              <span>Déconnexion</span>
+            </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-6">
-        {renderComponent()}
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-6">
+          {renderContent()}
+        </div>
       </main>
 
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
     </div>
   );
-} 
+};
+
+export default AdminPage; 

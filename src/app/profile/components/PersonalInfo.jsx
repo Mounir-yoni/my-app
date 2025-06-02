@@ -9,8 +9,8 @@ const PersonalInfo = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        Firstname: '',
+        Lastname: '',
         email: '',
         phone: '',
         Adress: '',
@@ -31,8 +31,8 @@ const PersonalInfo = () => {
         }
 
         setFormData({
-            firstName: userinfo.Firstname || '',
-            lastName: userinfo.Lastname || '',
+            Firstname: userinfo.Firstname || '',
+            Lastname: userinfo.Lastname || '',
             email: userinfo.email || '',
             phone: userinfo.phone || '',
             Adress: userinfo.Adress || '',
@@ -67,7 +67,7 @@ const PersonalInfo = () => {
             }
 
             const response = await axios.put(
-                `https://back-end-agence-de-voyage.onrender.com/api/v1/users/updateme`,
+                `https://back-end-obur.onrender.com/api/v1/users/updateme`,
                 formData,
                 {
                     headers: {
@@ -81,8 +81,8 @@ const PersonalInfo = () => {
                 // Update local storage with new user info
                 const updatedUser = {
                     ...getParsedLocalStorage("user"),
-                    Firstname: formData.firstName,
-                    Lastname: formData.lastName,
+                    Firstname: formData.Firstname,
+                    Lastname: formData.Lastname,
                     email: formData.email,
                     phone: formData.phone,
                     Adress: formData.Adress,
@@ -95,6 +95,7 @@ const PersonalInfo = () => {
                 setIsEditing(false);
             }
         } catch (err) {
+            console.log(err);
             setError(err.response?.data?.message || "Une erreur est survenue lors de la mise à jour des informations");
         } finally {
             setIsSaving(false);
@@ -143,8 +144,8 @@ const PersonalInfo = () => {
                         </label>
                         <input
                             type="text"
-                            name="firstName"
-                            value={formData.firstName}
+                            name="Firstname"
+                            value={formData.Firstname}
                             onChange={handleChange}
                             disabled={!isEditing}
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100"
@@ -157,8 +158,8 @@ const PersonalInfo = () => {
                         </label>
                         <input
                             type="text"
-                            name="lastName"
-                            value={formData.lastName}
+                            name="Lastname"
+                            value={formData.Lastname}
                             onChange={handleChange}
                             disabled={!isEditing}
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100"

@@ -3,6 +3,7 @@ import Features from '../components/Features';
 import OffersSlider from '../components/OffersSlider';
 import Services from '../components/Services';
 import Testimonials from '../components/Testimonials';
+import VacationPromo from '../components/VacationPromo';
 import Footer from '../components/Footer';
 
 export const metadata = {
@@ -52,6 +53,7 @@ export default function Home() {
         <main>
             <Hero />
             <Features />
+            <VacationPromo />
             <OffersSlider />
             <Services />
             <Testimonials />

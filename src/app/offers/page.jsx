@@ -7,7 +7,7 @@ export const metadata = {
 
 async function getOffers() {
     try {
-        const res = await fetch('https://back-end-agence-de-voyage.onrender.com/api/v1/voyages', { cache: 'no-store' });
+        const res = await fetch('https://back-end-obur.onrender.com/api/v1/voyages', { cache: 'no-store' });
         if (!res.ok) {
             throw new Error('Failed to fetch offers');
         }

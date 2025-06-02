@@ -1,11 +1,12 @@
 "use client";
-
+import emailjs from '@emailjs/browser';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNotification } from '../../../context/NotificationContext';
 
 export default function ContactForm() {
     const { showNotification } = useNotification();
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         surname: '',
@@ -23,15 +24,8 @@ export default function ContactForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you would typically send the form data to your backend
-        showNotification('Message sent successfully! We will contact you soon.', 'success');
-        setFormData({
-            name: '',
-            surname: '',
-            phone: '',
-            email: '',
-            message: ''
-        });
+        setIsLoading(true);
+
     };
 
     return (
@@ -42,7 +36,7 @@ export default function ContactForm() {
             className="bg-white rounded-2xl shadow-xl p-8"
         >
             <h2 className="text-2xl font-semibold text-amber-800 mb-6">Send us a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form action="https://formspree.io/f/mkgbnzlg" method="POST" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -123,9 +117,11 @@ export default function ContactForm() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="w-full bg-amber-700 text-white py-4 rounded-xl hover:bg-amber-800 transition text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    disabled={isLoading}
+                    className={`w-full bg-amber-700 text-white py-4 rounded-xl transition text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-800'
+                        }`}
                 >
-                    Send Message
+                    {isLoading ? 'Sending...' : 'Send Message'}
                 </motion.button>
             </form>
         </motion.div>

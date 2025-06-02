@@ -54,7 +54,7 @@ const CreateAdmin = () => {
                 adresse: formData.adresse
             };
 
-            const response = await axios.post('https://back-end-agence-de-voyage.onrender.com/api/v1/users', jsonData, {
+            const response = await axios.post('https://back-end-obur.onrender.com/api/v1/users', jsonData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

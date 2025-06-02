@@ -45,7 +45,7 @@ const OfferDetails = () => {
                     return;
                 }
 
-                const response = await axios.get(`https://back-end-agence-de-voyage.onrender.com/api/v1/voyages/${id}`);
+                const response = await axios.get(`https://back-end-obur.onrender.com/api/v1/voyages/${id}`);
                 const offerData = response.data.data;
                 setOffer(offerData);
                 setLocalStorage(`offer_${id}`, JSON.stringify(offerData));
@@ -141,11 +141,14 @@ const OfferDetails = () => {
                                     <div>
                                         <p className="text-sm text-gray-500">Destinations</p>
                                         <div className="flex flex-wrap gap-2 mt-1">
-                                            <span
-                                                className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
-                                            >
-                                                {offer.ville}
-                                            </span>
+                                            {offer.ville.map((ville, index) => (
+                                                <span
+                                                    key={index}
+                                                    className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
+                                                >
+                                                    {ville}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
